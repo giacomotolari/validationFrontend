@@ -143,9 +143,9 @@ function SignUpForm() {
       setCurrentUser((prev) => data.savedDBUser);
     })();
   };
-
+  
   return (
-    <div className='App'>
+    <div className='Signup'>
       <form>
         <fieldset>
           <legend>Sign up</legend>

@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from 'react';
+import { useState, useContext } from 'react';
 import { Context } from '../../App.js';
 import './login.scss';
 
@@ -7,24 +7,6 @@ function Login() {
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-
-  useEffect(() => {
-    (async () => {
-      const requestOptions = {
-        method: 'GET',
-        credentials: 'include',
-      };
-      const response = await fetch(
-        'http://localhost:3033/login/currentuser',
-        requestOptions
-      );
-      if (response.ok) {
-        const _currentUser = await response.json();
-        setCurrentUser((prev) => ({ ...prev, ..._currentUser }));
-      }
-    })();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const currentUserIsInGroup = (accessGroup) => {
     const accessGroupArray = currentUser.accessGroups
@@ -42,11 +24,6 @@ function Login() {
     const _password = e.target.value;
     setPassword(_password);
   };
-
-  // const handleLoginButton = (e) => {
-  //   e.preventDefault();
-  //   console.log("login on backend");
-  // };
 
   const handleLoginButton = async (e) => {
     e.preventDefault();
@@ -74,10 +51,11 @@ function Login() {
       setUsername('');
       setPassword('');
       const _currentUser = await response.json();
+      console.log(_currentUser);
       setCurrentUser((prev) => ({ ...prev, ..._currentUser }));
     }
   };
-  // console.log(currentUser);
+  console.log(`login:${currentUser.userName}`);
   return (
     <div className='Login'>
       {currentUser.userName && (
