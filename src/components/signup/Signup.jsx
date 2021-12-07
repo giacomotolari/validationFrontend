@@ -141,9 +141,19 @@ function SignUpForm() {
       );
       const data = await response.json();
       setCurrentUser((prev) => data.savedDBUser);
+      if (response.ok) {
+        const _currentUser = await response.json();
+        setCurrentUser((prev) => ({ ...prev, ..._currentUser }));
+        setUserName('');
+        setPassword1('');
+        setPassword2('');
+        setFirstName('');
+        setLastName('');
+        setEmail('');
+      }
     })();
   };
-  
+
   return (
     <div className='Signup'>
       <form>

@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { Context } from '../../App.js';
 import './login.scss';
 
@@ -7,6 +7,41 @@ function Login() {
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [notYetApprovedUsers, setNotYetApprovedUsers] = useState([]);
+
+  const loadNotYetApprovedUsers = async () => {
+    const requestOptions = {
+      method: 'GET',
+      credentials: 'include',
+    };
+    const response = await fetch(
+      'http://localhost:3033/login/notyetapprovedusers',
+      requestOptions
+    );
+    if (response.ok) {
+      const data = await response.json();
+      setNotYetApprovedUsers((prev) => [...data.users]);
+    }
+  };
+
+  useEffect(() => {
+    (async () => {
+      const requestOptions = {
+        method: 'GET',
+        credentials: 'include',
+      };
+      const response = await fetch(
+        'http://localhost:3033/login/currentuser',
+        requestOptions
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setCurrentUser((prev) => ({ ...prev, ...data.user }));
+      }
+      loadNotYetApprovedUsers();
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const currentUserIsInGroup = (accessGroup) => {
     const accessGroupArray = currentUser.accessGroups
@@ -36,6 +71,28 @@ function Login() {
     const response = await fetch('http://localhost:3033/login', requestOptions);
     const _currentUser = await response.json();
     setCurrentUser((prev) => ({ ...prev, ..._currentUser }));
+    setUsername('');
+    setPassword('');
+    loadNotYetApprovedUsers();
+  };
+
+  const handle_approveUserButton = async (id) => {
+    const requestOptions = {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        id,
+      }),
+    };
+    const response = await fetch(
+      'http://localhost:3033/login/approveduser',
+      requestOptions
+    );
+    if (response.ok) {
+      await response.json();
+      loadNotYetApprovedUsers();
+    }
   };
 
   const handleLogoutButton = async (e) => {
@@ -60,16 +117,16 @@ function Login() {
     <div className='Login'>
       {currentUser.userName && (
         <>
-          <h2>
-            Current User: {currentUser.firstName} {currentUser.lastName}
-          </h2>
+          {currentUser.userName !== 'anonymousUser' && (
+            <h2>Current User: {currentUser.userName}</h2>
+          )}
 
           {currentUserIsInGroup('loggedOutUsers') && (
             <form>
               <fieldset>
                 <legend>Login</legend>
                 <div className='row'>
-                  <label htmlFor='username'>Name</label>
+                  <label htmlFor='username'>User Name</label>
                   <input
                     type='text'
                     id='username'
@@ -101,7 +158,7 @@ function Login() {
           {currentUserIsInGroup('loggedOutUsers') && (
             <div className='panel'>Welcome to this site.</div>
           )}
-          {currentUserIsInGroup('notApprovedUsers') && (
+          {currentUserIsInGroup('notYetApprovedUsers') && (
             <>
               <div className='panel'>
                 <h3>Thank you for registering!</h3>
@@ -139,15 +196,34 @@ function Login() {
             <>
               <div className='panel'>
                 <h3>Admin Section:</h3>
-                <div>
-                  <button>Create users</button>
-                </div>
-                <div>
-                  <button>Edit users</button>
-                </div>
-                <div>
-                  <button>Delete users</button>
-                </div>
+                <h4>{notYetApprovedUsers.length} Users to Approve:</h4>
+                <table className='minimalistBlack'>
+                  <thead>
+                    <tr>
+                      <th>First Name</th>
+                      <th>Last Name</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {notYetApprovedUsers.map((user, index) => {
+                      return (
+                        <tr key={index}>
+                          <td>{user.firstName}</td>
+                          <td>{user.lastName}</td>
+                          <td>{user._id}</td>
+                          <td>
+                            <button
+                              onClick={() => handle_approveUserButton(user._id)}
+                            >
+                              Approve
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
               </div>
             </>
           )}
