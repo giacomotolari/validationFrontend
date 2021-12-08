@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import './App.scss';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+// import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import Login from './components/login/Login';
 import Signup from './components/signup/Signup';
@@ -12,7 +13,6 @@ export const Context = React.createContext();
 function App() {
   const [currentUser, setCurrentUser] = useState({});
   const navBanners = ['home', 'signup', 'login'];
-
 
   useEffect(() => {
     (async () => {
@@ -29,7 +29,7 @@ function App() {
         setCurrentUser((prev) => ({ ...prev, ..._currentUser }));
       }
     })();
-   
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
@@ -37,17 +37,11 @@ function App() {
       <Router>
         <div className='App'>
           <Navbar navBanners={navBanners} />
-          <Switch>
-            <Route path='/signup'>
-              <Signup />
-            </Route>
-            <Route path='/login'>
-              <Login />
-            </Route>
-            <Route exact path='/'>
-              <Home />
-            </Route>
-          </Switch>
+          <Routes>
+            <Route path='/' element={<Home />} />
+            <Route path='signup' element={<Signup />} />
+            <Route path='login' element={<Login />} />
+          </Routes>
         </div>
       </Router>
     </Context.Provider>

@@ -15,7 +15,7 @@ function Navbar(props) {
           <NavLink
             to={banner === 'home' ? '' : banner}
             exact={banner === 'home' ? true : false}
-            activeClassName='selected'
+            // activeClassName='selected'
           >
             <p>{banner}</p>
           </NavLink>

@@ -8,7 +8,7 @@ function Home() {
   console.log(`home:${currentUser.userName}`);
   return (
     <div className='Home'>
-      {currentUser.userName !== "anonymousUser" && (
+      {currentUser.userName !== 'anonymousUser' && (
         <>
           <h2>
             Welcome <span>{currentUser.userName}</span>
