@@ -1,10 +1,10 @@
 import React from 'react';
 import './home.scss';
-import { useContext } from 'react';
-import { Context } from '../../App.js';
+import { useTheme} from '../../ThemeContext';
+
 
 function Home() {
-  const { currentUser } = useContext(Context);
+  const  currentUser  = useTheme();
   console.log(`home:${currentUser.userName}`);
   return (
     <div className='Home'>

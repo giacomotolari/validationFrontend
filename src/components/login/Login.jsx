@@ -1,9 +1,10 @@
-import { useState, useContext, useEffect } from 'react';
-import { Context } from '../../App.js';
+import { useState, useEffect } from 'react';
+import { useTheme } from '../../ThemeContext';
+
 import './login.scss';
 
 function Login() {
-  const { currentUser, setCurrentUser } = useContext(Context);
+  const { currentUser, setCurrentUser } = useTheme();
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');

@@ -8,16 +8,17 @@ function Navbar(props) {
         <li
           key={index}
           className={
-            banner === 'signup' || banner === 'login' ? 'validations' : banner
+            banner.path === 'signup' || banner.path === 'login'
+              ? 'validations'
+              : banner.path
           }
-          id={banner}
+          id={banner.path}
         >
           <NavLink
-            to={banner === 'home' ? '' : banner}
-            exact={banner === 'home' ? true : false}
-            // activeClassName='selected'
+            to={banner.path === 'home' ? '' : banner.path}
+            exact={banner.path === 'home' ? true : false}
           >
-            <p>{banner}</p>
+            <p>{banner.path}</p>
           </NavLink>
         </li>
       ))}

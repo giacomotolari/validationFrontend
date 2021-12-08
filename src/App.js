@@ -1,50 +1,50 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import './App.scss';
-// import { BrowserRouter } from "react-router-dom";
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import React, { useState, useEffect } from 'react';
 import Login from './components/login/Login';
 import Signup from './components/signup/Signup';
 import Navbar from './components/navbar/Navbar';
 import Home from './components/home/Home';
+import { ThemeProvider } from './ThemeContext';
 
-export const Context = React.createContext();
 
 function App() {
-  const [currentUser, setCurrentUser] = useState({});
-  const navBanners = ['home', 'signup', 'login'];
+  // const [navBanners, setNavbanners] = useState([]);
+  // const  {currentUser,setCurrentUser } = useTheme();
 
-  useEffect(() => {
-    (async () => {
-      const requestOptions = {
-        method: 'GET',
-        credentials: 'include',
-      };
-      const response = await fetch(
-        'http://localhost:3033/login/currentuser',
-        requestOptions
-      );
-      if (response.ok) {
-        const _currentUser = await response.json();
-        setCurrentUser((prev) => ({ ...prev, ..._currentUser }));
-      }
-    })();
+  const navBanners = [
+    { path: 'home', component: <Home /> },
+    { path: 'signup', component: <Signup /> },
+    { path: 'login', component: <Login /> },
+  ];
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // useEffect(() => {
+  //   (async () => {
+  //     const response = await fetch('http://localhost:3033/navbanners');
+  //     const data = await response.json();
+  //     console.log(data);
+  //     setNavbanners((prev) => [...prev, ...data]);
+  //   })();
+
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
   return (
-    <Context.Provider value={{ currentUser, setCurrentUser }}>
+    <ThemeProvider>
       <Router>
         <div className='App'>
           <Navbar navBanners={navBanners} />
           <Routes>
-            <Route path='/' element={<Home />} />
-            <Route path='signup' element={<Signup />} />
-            <Route path='login' element={<Login />} />
+            {navBanners.map((banner, index) => (
+              <Route
+                path={banner.path === 'home' ? '/' : banner.path}
+                element={banner.component}
+                key={index}
+              />
+            ))}
           </Routes>
         </div>
       </Router>
-    </Context.Provider>
+    </ThemeProvider>
   );
 }
 

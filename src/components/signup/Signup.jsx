@@ -1,11 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import './signup.scss';
-import { useEffect, useState, useContext } from 'react';
-import { Context } from '../../App.js';
+import { useEffect, useState} from 'react';
+import { useTheme} from '../../ThemeContext';
 import Eye from '../../asset/icons/eye.png';
 
 function SignUpForm() {
-  const { setCurrentUser } = useContext(Context);
+  const  setCurrentUser  = useTheme();
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
